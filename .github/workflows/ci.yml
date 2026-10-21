@@ -1,0 +1,69 @@
+name: BITG checks
+on:
+  push:
+    branches: [codex/bitg-platform, main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: ci-only-postgres
+          POSTGRES_DB: bitg_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      SITE_URL: https://bitg.example.test
+      ADMIN_URL: https://admin.bitg.example.test
+      PUBLICATION_APPROVED: "false"
+      BUSINESS_DETAILS_APPROVED: "false"
+      DATABASE_URL: postgresql://bitg_web:ci-only-web@localhost:5432/bitg_test
+      ADMIN_DATABASE_URL: postgresql://bitg_admin:ci-only-admin@localhost:5432/bitg_test
+      MIGRATION_DATABASE_URL: postgresql://postgres:ci-only-postgres@localhost:5432/bitg_test
+      BETTER_AUTH_SECRET: ci-only-not-production-auth-secret-at-least-32
+      RATE_LIMIT_SECRET: ci-only-not-production-rate-secret-at-least-32
+      JOBS_SECRET: ci-only-not-production-jobs-secret-at-least-32
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install
+      - name: Unit tests
+        run: npm test
+      - name: Production builds
+        run: npm run build
+      - name: Type checks
+        run: npm run typecheck
+      - name: Prepare isolated database roles
+        env:
+          PGPASSWORD: ci-only-postgres
+        run: psql -h localhost -U postgres -d bitg_test -c "CREATE ROLE bitg_web LOGIN PASSWORD 'ci-only-web'; CREATE ROLE bitg_admin LOGIN PASSWORD 'ci-only-admin';"
+      - run: npm run db:migrate
+      - run: node scripts/grant-roles.mjs
+      - run: npm run test:integration
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser design checks
+        run: npm run test:e2e
+      - name: Retain browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failures
+          path: test-results/
+          retention-days: 7
+      - name: Retain dependency lock for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-lock
+          path: package-lock.json
+          retention-days: 7
