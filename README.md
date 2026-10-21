@@ -1,85 +1,53 @@
 # Beck In The Gym
 
-Professionele personal-trainingwebsite voor **Beck In The Gym**.
+Premium, tweetalige personal-trainingwebsite en een afzonderlijke beveiligde omgeving voor contactbeheer. Dit is een **reviewversie**: er is geen productiepublicatie uitgevoerd.
 
-## Doel
+## Snel starten
 
-Een premium, toegankelijke website met een donker, licht leesbaar design. De website richt zich op beginners en mensen die sterker, fitter en gezonder willen worden, met nadruk op spieropbouw en krachttraining.
+Gebruik Node.js 24 en PostgreSQL 17. Voer in deze hoofdmap uit:
 
-## Richtlijnen
+```sh
+npm install
+cp .env.example .env
+npm run dev
+```
 
-- **Geen prijzen** op de website.
+De website draait op `http://localhost:3000`. Start beheer in een tweede terminal met `npm run dev:admin` (`http://localhost:3001`). Zonder database- en mailconfiguratie zijn contentpagina's bruikbaar en blijft het aanvraagformulier uitgeschakeld.
 
-- **Geen boekingen of reserveringen** via de website.
+Voor alleen een ontwerpvoorbeeld, zonder externe dependencies:
 
-Bezoekers kunnen contact opnemen via een **contactformulier**.
+```sh
+node scripts/build-preview.mjs
+node scripts/preview-server.mjs
+```
 
--Modern donker thema, met voldoende contrast en heldere fitnessfotografie.
+Open `http://127.0.0.1:4173`. Dit voorbeeld verstuurt niets en bevat geen echte klantgegevens. Het gebruikt dezelfde pagina-inhoud en stijlen als de Next.js-website.
 
-- Mobielvriendelijk, snel en toegankelijk.
+## Project
 
--Geen verzonnen reviews, certificeringen of resultaten.
+- `apps/web`: publieke NL/EN-website, vCard, QR-code, SEO en aanvraag-endpoint.
+- `apps/admin`: login, verplichte authenticatorbeveiliging, contactbeheer en e-mailjobs.
+- `packages/core`: gedeelde routes, validatie en beveiligingshelpers.
+- `packages/database`: Drizzle-modellen, PostgreSQL-migraties en opslag.
+- `docs`: architectuur, ontwerp, migratie, beheer en acceptatie.
 
-## Voorgestelde pagina's
+De meegeleverde originele README en starter-ZIP zijn bewaard. De bestaande Beck on the Rocks-website en browserdocumenten zijn niet gewijzigd.
 
-| --- | --- |
+## Controles
 
-| Pagina | Inhoud |
+```sh
+npm test
+npm run typecheck
+npm run build
+npm run test:integration
+npm run test:e2e
+npm run release:check
+```
 
-| Home | Introductie, sterke fotografie, aanpak, contactoproep |
+De integratietest vereist een afzonderlijke testdatabase met twee rollen. De GitHub-workflow richt die tijdelijk in. Voer integratietests nooit uit op productie. Zie [beheerhandleiding](docs/operations.md).
 
-Over mij | Trainer, ervaring, visie en werkwijze | Personal training | Begeleiding, voor wie, wat je kunt verwachten | | Trainingsdoelen | Spieropbouw, kracht, fitter worden, gezondheid | | Contact | Contactformulier en contactinformatie | Privacy | Privacyverklaring, met aandacht voor contactformulier |
+## Publiceren
 
-## Projectstructuur
+Volg eerst [de acceptatielijst](docs/acceptance.md). Vul alleen bevestigde BITG-bedrijfsgegevens in. De site is standaard `noindex`, analytics staat uit en er is geen automatische productie-deployment. De eigenaar moet ontwerp, bedrijfsgegevens, hostingkosten en publicatie goedkeuren.
 
-text
-
-beck-in-the-gym/
-
-public/
-
--images/
-
-src/
-
--components/
-
--pages/
-
--styles/
-
--lib/
-
-docs/
-
-- content.md
-
-- design.md
-
-# Geoptimaliseerde eigen foto's en visuals
-
-# Herbruikbare interfaceonderdelen # Pagina's / routes
-
-# Kleuren, typografie en globale styling # Helpers, validatie en formulierlogica
-
-# Tekstrichtlijnen en paginaplan
-
-# Visuele richtlijnen
-
-# Voorbeeld van omgevingsvariabelen
-
-.env.example
-
-.gitignore
-
-README.md
-
-Dit is een **framework-onafhankelijke basis**: de map bevat nog geen werkende website of geconfigureerd contactformulier. Kies daarna bijvoorbeeld Next.js of Astro en pas structuur aan de conventies van dat framework aan.
-
-de
-
-## Contactformulier
-
-Vereiste velden: naam, e-mailadres en bericht. Voeg server-side validatie, spambeveiliging en een duidelijke privacyverklaring toe. Plaats APl-sleutels uitsluitend in niet-gecommitte omgevingsvariabelen. Publiceer geen echte contactgegevens zonder toestemming.
-
-## Volgende stappen
+Kopieer nooit `.env`, exports met klantgegevens, databases of herstelcodes naar GitHub. De code ondersteunt één juridische onderneming met meerdere activiteiten; de factuurgenerator en het vieractiviteiten-dashboard zijn bewust een latere fase.
