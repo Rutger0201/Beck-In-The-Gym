@@ -12,6 +12,7 @@ test("logos fit and stay centered on phone, tablet and desktop",async({page},tes
       await page.emulateMedia({colorScheme:theme});
       for(const route of ["/","/visitekaartje/"]){
         await page.goto(route);await page.evaluate(()=>document.fonts.ready);
+        expect(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme)).toBe('dark');expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(17, 19, 16)');await expect(page.locator('#theme')).toHaveCount(0);
         expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${route}`).toBe(true);
         const frames=page.locator(".logo-lockup");
         for(const frame of await frames.all()){

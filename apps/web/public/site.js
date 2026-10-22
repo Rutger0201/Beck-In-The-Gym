@@ -1,13 +1,8 @@
 (() => {
   const root = document.documentElement;
   root.classList.add('js');
-  const preference = document.querySelector('#theme');
-  try { if (preference) preference.value = localStorage.getItem('bitg-theme') || 'system'; } catch {}
-  preference?.addEventListener('change', () => {
-    const theme = preference.value;
-    if (theme === 'system') delete root.dataset.theme; else root.dataset.theme = theme;
-    try { localStorage.setItem('bitg-theme', theme); } catch {}
-  });
+  root.dataset.theme = 'dark';
+  try { localStorage.removeItem('bitg-theme'); } catch {}
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#navigation');
   const closeMenu = () => { nav?.classList.remove('is-open'); toggle?.setAttribute('aria-expanded','false'); };

@@ -2,7 +2,7 @@ import type { Locale, PageKey } from "@bitg/core/routes";
 export const content = {
   nl: {
     nav: { home: "Home", about: "Over mij", training: "Personal training", services: "Diensten", approach: "Werkwijze", results: "Ervaringen", faq: "Veelgestelde vragen", contact: "Contact", card: "Visitekaartje", privacy: "Privacy" },
-    cta: "Vraag een kennismakingsgesprek aan", shortCta: "Kennismaken", skip: "Direct naar inhoud", menu: "Menu", close: "Sluiten", theme: "Weergave", system: "Systeem", light: "Licht", dark: "Donker",
+    cta: "Vraag een kennismakingsgesprek aan", shortCta: "Kennismaken", skip: "Direct naar inhoud", menu: "Menu", close: "Sluiten",
     eyebrow: "PERSONAL TRAINING · ALMERE",
     headline: ["STERKER.", "OP JOUW", "MANIER."],
     heroText: "Jouw doelen. Jouw tempo. Mijn volle aandacht. Persoonlijke coaching waarmee je beter leert bewegen en gericht vooruitgaat.",
@@ -57,7 +57,7 @@ export const content = {
   },
   en: {
     nav: { home: "Home", about: "About me", training: "Personal training", services: "Services", approach: "Approach", results: "Experiences", faq: "Frequently asked questions", contact: "Contact", card: "Business card", privacy: "Privacy" },
-    cta: "Request an introductory conversation", shortCta: "Let's meet", skip: "Skip to content", menu: "Menu", close: "Close", theme: "Appearance", system: "System", light: "Light", dark: "Dark",
+    cta: "Request an introductory conversation", shortCta: "Let's meet", skip: "Skip to content", menu: "Menu", close: "Close",
     eyebrow: "PERSONAL TRAINING · ALMERE", headline: ["STRONGER.", "YOUR", "WAY."],
     heroText: "Your goals. Your pace. My full attention. Personal coaching to help you move well and make purposeful progress.",
     secondary: "Explore the coaching", scroll: "DISCOVER BECK IN THE GYM", heroNote: "TECHNIQUE. ATTENTION. PROGRESS.", values: ["Personal attention", "Technique first", "Every experience level"],

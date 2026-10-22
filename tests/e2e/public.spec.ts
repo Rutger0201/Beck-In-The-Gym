@@ -1,9 +1,11 @@
 import { test,expect } from "@playwright/test";
-test("homepage, theme, mobile menu and language switch",async({page,isMobile})=>{
+test("homepage stays dark with light system and saved preference; menu and language work",async({page,isMobile})=>{
+  await page.emulateMedia({colorScheme:"light"});await page.addInitScript(()=>localStorage.setItem("bitg-theme","light"));
   await page.goto("/");await expect(page.locator("h1")).toContainText("STERKER.");
   await expect(page.locator("body")).not.toHaveJSProperty("scrollWidth",0);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);expect(overflow).toBe(false);
-  await page.locator("#theme").selectOption("dark");await expect(page.locator("html")).toHaveAttribute("data-theme","dark");
+  await expect(page.locator("#theme")).toHaveCount(0);await expect(page.locator("html")).toHaveAttribute("data-theme","dark");
+  expect(await page.locator("html").evaluate(el=>getComputedStyle(el).colorScheme)).toBe("dark");expect(await page.locator("body").evaluate(el=>getComputedStyle(el).backgroundColor)).toBe("rgb(17, 19, 16)");
   await page.reload();await expect(page.locator("html")).toHaveAttribute("data-theme","dark");
   if(isMobile)await page.getByRole("button",{name:"Menu"}).click();
   await page.getByRole("link",{name:"EN",exact:true}).click();await expect(page.locator("html")).toHaveAttribute("lang","en");await expect(page.locator("h1")).toContainText("STRONGER.");

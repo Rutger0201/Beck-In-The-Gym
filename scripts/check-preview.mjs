@@ -21,12 +21,12 @@ try{
     assert.equal(await page.locator('h1').innerText(),'STERKER.\nOP JOUW\nMANIER.');checks++;
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);checks++;
     await page.screenshot({path:resolve(output,`${name}.png`),fullPage:true});
-    await page.locator('#theme').selectOption(colorScheme==='dark'?'light':'dark');
-    assert.equal(await page.locator('html').getAttribute('data-theme'),colorScheme==='dark'?'light':'dark');checks++;
+    assert.equal(await page.locator('#theme').count(),0);
+    assert.equal(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme),'dark');checks++;
     await page.goto('https://bitg.preview/contact?goal=technique&format=technique');
     assert.equal(await page.locator('[name="goal"]').inputValue(),'technique');checks++;
     await page.locator('[name="name"]').fill('Test person');await page.locator('[name="email"]').fill('test@example.test');await page.locator('button[type=submit]').click();
-    await page.locator('.form-status[data-error]').waitFor();assert.equal(await page.locator('[name="name"]').inputValue(),'Test person');checks++;
+    await page.locator('.form-status').filter({hasText:'geen gegevens verstuurd'}).waitFor();assert.equal(await page.locator('[name="name"]').inputValue(),'Test person');checks++;
     if(width<760){await page.locator('.menu-toggle').click();assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');checks+=2;}
     await page.goto('https://bitg.preview/en/services');assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.equal(await page.locator('.service').count(),5);checks+=2;
     assert.deepEqual(errors,[]);checks++;await context.close();
