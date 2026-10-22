@@ -6,6 +6,7 @@ test('all four activities use their own generator and persist test documents',as
  const writes:string[]=[];page.on('request',r=>{if(!['GET','HEAD'].includes(r.method()))writes.push(r.url());});
  for(const [i,name]of ['Beck In The Gym','Beck on the Rocks','Beveiligingsactiviteiten','Vierde activiteit'].entries()){
   await page.locator(`[data-activity="${['bitg','botr','security','fourth'][i]}"]`).click();await expect(page.getByRole('heading',{level:1})).toHaveText(name);
+  const viewport=page.viewportSize();await page.setViewportSize({width:320,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);if(viewport)await page.setViewportSize(viewport);
   await page.getByRole('button',{name:'+ Nieuwe offerte'}).click();await page.getByLabel('Naam',{exact:true}).fill(`Testklant ${i}`);await page.getByLabel('Prijs (€)',{exact:true}).first().fill('10,25');
   await page.getByRole('button',{name:'Opslaan',exact:true}).click();await expect(page.locator('.editor-heading h2')).toContainText(`TEST-${['BITG','BOTR','BEV','ACT4'][i]}-O-`);
   await expect(page.locator('.grand-total')).toContainText('12,40');await page.getByRole('button',{name:'← Alle activiteiten'}).click();
