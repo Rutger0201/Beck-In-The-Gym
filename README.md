@@ -23,6 +23,16 @@ node scripts/preview-server.mjs
 
 Open `http://127.0.0.1:4173`. Dit voorbeeld verstuurt niets en bevat geen echte klantgegevens. Het gebruikt dezelfde pagina-inhoud en stijlen als de Next.js-website.
 
+De online ontwerpversie staat op https://rutger0201.github.io/Beck-In-The-Gym/preview/ . Het afzonderlijke visitekaartje staat op https://rutger0201.github.io/Beck-In-The-Gym/preview/visitekaartje/ . De testversie bevat geen server of administratie; de contactdownload bevat alleen de bevestigde naam, merknaam en website.
+
+Na installatie van de dependencies kun je dezelfde Pages-bestanden opnieuw maken:
+
+```sh
+node scripts/build-preview.mjs --qr --base-path /Beck-In-The-Gym/preview --origin https://rutger0201.github.io --output .local/pages-review
+```
+
+De bestaande offerte-/factuurgenerator staat op https://beckontherocks.nl/documenten.html . Dat is de browsergebonden Beck on the Rocks-generator; de nieuwe gedeelde BITG-module is nog niet geïmplementeerd. Gebruik het oorspronkelijke apparaat en browserprofiel om bestaande documenten te zien.
+
 ## Project
 
 - `apps/web`: publieke NL/EN-website, vCard, QR-code, SEO en aanvraag-endpoint.
