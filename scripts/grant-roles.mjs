@@ -11,6 +11,7 @@ try{
   await client.query(`GRANT EXECUTE ON FUNCTION submit_bitg_contact(uuid,text,text,text,text,text,text,text,text,text) TO "${web}"`);
   await client.query(`GRANT SELECT,INSERT,UPDATE,DELETE ON auth_user,auth_session,auth_account,auth_verification,auth_two_factor,auth_rate_limit,contact_requests,mail_outbox,rate_limits TO "${admin}"`);
   await client.query(`GRANT SELECT ON activities,legal_entities,memberships TO "${admin}"`);
+  await client.query(`GRANT SELECT,INSERT,UPDATE,DELETE ON marketing_settings,marketing_runs,marketing_research_items,marketing_opportunities,marketing_calendar_items TO "${admin}"`);
   await client.query(`GRANT SELECT,INSERT ON audit_events TO "${admin}"`);
   await client.query('COMMIT');console.log('Separate web/admin permissions granted. The public role has no table access.');
 }catch(error){await client.query('ROLLBACK');throw error;}finally{await client.end();}
