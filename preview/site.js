@@ -33,16 +33,18 @@
     const input = form.elements.namedItem(name), value = params.get(name);
     if (input && value && [...input.options].some(option=>option.value===value)) { input.value=value; if(name==='format') form.querySelector('.form-more').open=true; }
   }
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const status = form.querySelector('.form-status');
-    status.textContent = nl
-      ? 'Dit is een testversie. Het formulier verstuurt geen gegevens.'
-      : 'This is a test version. The form does not send any data.';
-    status.dataset.error = 'true';
-    status.focus();
-  });
-  return;
+  if (form.hasAttribute('data-preview-form')) {
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const status = form.querySelector('.form-status');
+      status.textContent = nl
+        ? 'Test geslaagd. Er zijn geen gegevens verstuurd of opgeslagen.'
+        : 'Test completed. No information was sent or stored.';
+      status.focus();
+    });
+    form.querySelector('button[type=submit]').disabled = false;
+    return;
+  }
   let requestId;
   form.addEventListener('submit', async event => {
     if (!window.crypto?.randomUUID || !window.fetch) return;
