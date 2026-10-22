@@ -47,6 +47,10 @@ De bestaande browsergebonden BOTR-generator blijft op https://beckontherocks.nl/
 
 De meegeleverde originele README en starter-ZIP zijn bewaard. De bestaande Beck on the Rocks-website en browserdocumenten zijn niet gewijzigd.
 
+## Marketingdashboard
+
+De beheeromgeving bevat op `/marketing` een AI-marketingdashboard met kansen, prioriteitsscores, een 30-dagenkalender en leadanalyse. Er wordt niets automatisch gepubliceerd of uitgegeven. Zie [marketingmodule](docs/marketing.md).
+
 ## Controles
 
 ```sh

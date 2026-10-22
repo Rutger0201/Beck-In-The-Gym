@@ -5,5 +5,7 @@ loadEnvConfig(fileURLToPath(new URL("../../", import.meta.url)));
 export default {
   transpilePackages: ["@bitg/core", "@bitg/database"],
   poweredByHeader: false,
+  // The marketing dashboard lives at /marketing on the admin origin; /admin/marketing is kept as an alias.
+  async redirects() { return [{ source: "/admin/marketing/:path*", destination: "/marketing/:path*", permanent: false }, { source: "/admin", destination: "/", permanent: false }]; },
   async headers() { return [{ source: "/:path*", headers: securityHeaders(true) }]; }
 };
