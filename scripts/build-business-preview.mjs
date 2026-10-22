@@ -1,0 +1,44 @@
+import {mkdir,readFile,writeFile,cp} from 'node:fs/promises';
+import {resolve,dirname} from 'node:path';
+import {createRequire} from 'node:module';
+import {createHash} from 'node:crypto';
+import {pageMarkup} from '../apps/web/lib/render.ts';
+import {buildVcard} from '../packages/core/src/security.ts';
+const require=createRequire(new URL('../apps/web/package.json',import.meta.url)),sharp=require('sharp'),QRCode=require('qrcode');
+const arg=name=>{const i=process.argv.indexOf(name);return i<0?undefined:process.argv[i+1];};
+const base=(arg('--base-path')||'/Beck-In-The-Gym').replace(/\/$/,'');
+if(!/^\/[a-zA-Z0-9/_-]+$/.test(base))throw new Error('Invalid base path');
+const origin=new URL(arg('--origin')||'https://rutger0201.github.io').origin;
+const output=resolve(import.meta.dirname,'..',arg('--output')||'.local/business-preview');
+const source=new URL('../apps/business/',import.meta.url);
+const business=resolve(output,'zakelijk'),card=resolve(output,'kaart');
+await mkdir(resolve(business,'assets'),{recursive:true});await mkdir(resolve(card,'assets'),{recursive:true});
+await cp(new URL('index.html',source),resolve(business,'index.html'));
+for(const name of ['business.mjs','business.css','store.mjs'])await cp(new URL(name,source),resolve(business,'assets',name));
+await cp(new URL('../packages/core/src/documents.mjs',import.meta.url),resolve(business,'assets/documents.mjs'));
+await cp(new URL('../apps/web/public/brand/emblem.jpg',import.meta.url),resolve(business,'assets/logo-bitg.jpg'));
+await cp(new URL('brand/botr.png',source),resolve(business,'assets/logo-botr.png'));
+for(const name of ['security','fourth'])await cp(new URL(`brand/${name}.svg`,source),resolve(business,`assets/logo-${name}.svg`));
+const publicUrl=`${origin}${base}/preview/`,cardUrl=`${origin}${base}/kaart/`;
+await cp(new URL('../apps/web/public/brand/',import.meta.url),resolve(card,'assets/brand'),{recursive:true});
+await cp(new URL('../apps/web/public/fonts/',import.meta.url),resolve(card,'assets/fonts'),{recursive:true});
+await cp(new URL('install.mjs',source),resolve(card,'assets/install.mjs'));
+const css=(await readFile(new URL('../apps/web/app/global.css',import.meta.url),'utf8')).replaceAll("url('/fonts/","url('./fonts/")+`\n.card-app{padding:22px}.card-app .business-card{width:min(100%,590px);padding-block:25px}.card-top{display:flex;justify-content:space-between;align-items:center;gap:20px;max-width:590px;margin:auto;font-size:12px}.card-top a{text-decoration:underline}.card-install{font-size:12px;min-height:44px;padding:10px 15px}.install-help{max-width:590px;margin:20px auto;padding:20px;border:1px solid var(--line);font-size:14px}.card-app .qr{text-align:center}.card-app .qr img{margin-inline:auto}.card-app .card-content>.button{overflow-wrap:anywhere}.card-test{text-align:center;font-size:11px;color:var(--muted);margin:20px auto;max-width:590px}`;
+await writeFile(resolve(card,'assets/card.css'),css);
+await writeFile(resolve(card,'contact.vcf'),buildVcard({name:'Rutger',website:publicUrl}));
+await writeFile(resolve(card,'qr.svg'),await QRCode.toString(cardUrl,{type:'svg',errorCorrectionLevel:'M',margin:4}));
+let markup=pageMarkup('nl','card',{name:'Rutger',verified:false,formAvailable:false});
+markup=markup.replaceAll('src="/brand/','src="./assets/brand/').replace('href="/contact.vcf"','href="./contact.vcf"').replace('src="/qr.svg?lang=nl"','src="./qr.svg"').replaceAll('href="/contact"',`href="${base}/preview/contact/"`).replace('href="/"',`href="${base}/preview/"`);
+await writeFile(resolve(card,'index.html'),`<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#111310"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="BITG kaart"><title>BITG — digitaal visitekaartje</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/icon-192.png"><link rel="apple-touch-icon" href="./assets/icon-192.png"><link rel="stylesheet" href="./assets/card.css"></head><body class="card-app"><header class="card-top"><a href="${base}/preview/">Beck In The Gym</a><button class="button card-install" type="button" data-install>Zet op beginscherm</button></header><aside class="install-help" data-install-help hidden tabindex="-1"><strong>Je eigen BITG-snelkoppeling</strong><p>Android: open het menu ⋮ en kies Toevoegen aan startscherm of App installeren.</p><p>iPhone: open deze pagina in Safari. Tik op Delen en kies Zet op beginscherm.</p><p>De snelkoppeling opent direct dit visitekaartje.</p></aside><main>${markup}</main><p class="card-test">Testversie. Telefoon, e-mail en sociale media worden toegevoegd zodra de BITG-contactgegevens bevestigd zijn.</p><script type="module" src="./assets/install.mjs"></script></body></html>`);
+for(const [directory,name,shortName]of [[business,'Beck Business — alle activiteiten','Beck Business'],[card,'Beck In The Gym — visitekaartje','BITG kaart']]){
+  for(const size of [192,512])await sharp(new URL('../apps/web/public/brand/emblem.jpg',import.meta.url).pathname).resize(size,size,{fit:'contain',background:'#000'}).png().toFile(resolve(directory,`assets/icon-${size}.png`));
+  const manifest={id:'./',name,short_name:shortName,lang:'nl',start_url:'./',scope:'./',display:'standalone',background_color:'#111310',theme_color:'#111310',icons:[192,512].map(size=>({src:`./assets/icon-${size}.png`,sizes:`${size}x${size}`,type:'image/png',purpose:'any'}))};
+  await writeFile(resolve(directory,'manifest.webmanifest'),JSON.stringify(manifest,null,2));
+  const shell=directory===business?['./','./index.html','./manifest.webmanifest','./assets/business.css','./assets/business.mjs','./assets/store.mjs','./assets/documents.mjs','./assets/logo-bitg.jpg','./assets/logo-botr.png','./assets/logo-security.svg','./assets/logo-fourth.svg']:['./','./index.html','./manifest.webmanifest','./assets/card.css','./assets/install.mjs','./assets/brand/logo-white.png','./assets/brand/emblem.jpg','./assets/fonts/inter-regular.woff2','./assets/fonts/inter-semibold.woff2','./assets/fonts/barlow-condensed-bold.ttf','./contact.vcf','./qr.svg'];
+  shell.push('./assets/icon-192.png','./assets/icon-512.png');
+  const hash=createHash('sha256');for(const path of shell.filter(p=>p!=='./'))hash.update(await readFile(resolve(directory,path)));
+  const prefix=directory===business?'beck-business-shell-':'beck-card-shell-',cache=prefix+hash.digest('hex').slice(0,12);
+  // Only public shell files are cached. Never cache API data or touch another app's caches.
+  await writeFile(resolve(directory,'sw.js'),`const CACHE=${JSON.stringify(cache)},PREFIX=${JSON.stringify(prefix)},FILES=${JSON.stringify(shell)};self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin||!u.pathname.startsWith(new URL(self.registration.scope).pathname))return;e.respondWith(fetch(e.request).then(r=>{if(r.ok&&FILES.some(p=>new URL(p,self.registration.scope).pathname===u.pathname)){const copy=r.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(e.request,copy)));}return r;}).catch(()=>caches.match(e.request).then(r=>r||(e.request.mode==='navigate'?caches.match('./index.html'):Response.error()))));});`);
+}
+console.log(`Built separate card and four-activity business workbench in ${output}`);

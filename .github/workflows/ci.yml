@@ -68,6 +68,13 @@ jobs:
           name: layout-review
           path: test-results/review/
           retention-days: 7
+      - name: Retain reviewed business apps
+        uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-business-apps
+          path: .local/preview/Beck-In-The-Gym/
+          include-hidden-files: true
+          retention-days: 7
       - name: Retain browser failure evidence
         if: failure()
         uses: actions/upload-artifact@v4

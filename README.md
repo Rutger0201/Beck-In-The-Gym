@@ -31,7 +31,11 @@ Na installatie van de dependencies kun je dezelfde Pages-bestanden opnieuw maken
 node scripts/build-preview.mjs --qr --base-path /Beck-In-The-Gym/preview --origin https://rutger0201.github.io --output .local/pages-review
 ```
 
-De bestaande offerte-/factuurgenerator staat op https://beckontherocks.nl/documenten.html . Dat is de browsergebonden Beck on the Rocks-generator; de nieuwe gedeelde BITG-module is nog niet geïmplementeerd. Gebruik het oorspronkelijke apparaat en browserprofiel om bestaande documenten te zien.
+De centrale testwerkplek voor alle vier de activiteiten staat op https://rutger0201.github.io/Beck-In-The-Gym/zakelijk/ . BITG, BOTR, beveiliging en de configureerbare vierde activiteit gebruiken dezelfde documentkern, met eigen huisstijlen en diensten. De aparte installeerbare kaart staat op https://rutger0201.github.io/Beck-In-The-Gym/kaart/ . Beide apps hebben een eigen manifest, startpagina, icoon en service worker.
+
+De werkplek bewaart testdocumenten in IndexedDB van deze browser. Iedere PDF vermeldt dat het een testdocument is; de nummers beginnen met `TEST-`. Definitieve factuuruitgifte, gedeelde serveropslag, beveiligde toegang en automatische mailbezorging zijn nog niet geactiveerd. Een e-mailconcept opent alleen je eigen mailprogramma en markeert niets automatisch als verstuurd.
+
+De bestaande browsergebonden BOTR-generator blijft op https://beckontherocks.nl/documenten.html . Gebruik het oorspronkelijke apparaat en browserprofiel om bestaande documenten te zien. De nieuwe werkplek kan een BOTR-back-up uitsluitend inventariseren; bedragen en bestaande documenten worden niet automatisch gemigreerd.
 
 ## Project
 
@@ -60,4 +64,4 @@ De integratietest vereist een afzonderlijke testdatabase met twee rollen. De Git
 
 Volg eerst [de acceptatielijst](docs/acceptance.md). Vul alleen bevestigde BITG-bedrijfsgegevens in. De site is standaard `noindex`, analytics staat uit en er is geen automatische productie-deployment. De eigenaar moet ontwerp, bedrijfsgegevens, hostingkosten en publicatie goedkeuren.
 
-Kopieer nooit `.env`, exports met klantgegevens, databases of herstelcodes naar GitHub. De code ondersteunt één juridische onderneming met meerdere activiteiten; de factuurgenerator en het vieractiviteiten-dashboard zijn bewust een latere fase.
+Kopieer nooit `.env`, exports met klantgegevens, databases of herstelcodes naar GitHub. De gedeelde documentkern staat in `packages/core/src/documents.mjs`; de testwerkplek in `apps/business`. Eén juridische onderneming en de centrale klantenlijst worden gescheiden van de vier handelsactiviteiten en hun document-snapshots.

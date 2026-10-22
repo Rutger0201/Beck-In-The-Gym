@@ -9,7 +9,7 @@ Read README.md and the relevant docs before changing behavior. Preserve user edi
 - Treat uploaded logos as brand originals. Keep licensed fonts locally hosted.
 - Don't copy bartending contact or legal details into BITG without confirmation.
 - No production deployment, repository-visibility change, or legacy data migration without the applicable owner approval.
-- The administrative document module is a later approval gate. Do not modify Beck On The Rocks as a side effect.
+- The owner has authorised the shared four-activity document module. Its Pages workbench uses browser-local test documents. Definitive issuance and shared server storage require the production infrastructure. Do not modify Beck On The Rocks as a side effect.
 
 ## Security
 
