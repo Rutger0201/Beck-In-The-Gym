@@ -13,6 +13,7 @@ test('all four activities use their own generator and persist test documents',as
  await page.reload();await expect(page.locator('.activity-choice')).toHaveCount(4);await expect(page.locator('.activity-choice').first()).toContainText('1 documenten');expect(writes).toEqual([]);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  await page.screenshot({path:`test-results/review/${info.project.name}-business-dashboard.png`,fullPage:true});
+ await page.setViewportSize({width:320,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
 });
 test('quotation converts to invoice concept with unchanged amounts and source reference',async({page},info)=>{
  await configure(page);await page.locator('[data-activity="bitg"]').click();await page.getByRole('button',{name:'+ Nieuwe offerte'}).click();await page.getByLabel('Naam',{exact:true}).fill('Testpersoon');await page.getByLabel('Prijs (€)',{exact:true}).fill('45');await page.getByRole('button',{name:'Opslaan',exact:true}).click();

@@ -24,6 +24,6 @@ Owner → password + authenticator → membership check → contact list → opt
 
 ## Business separation
 
-`legal_entities` describes the legal undertaking; `activities` describes brands/activities. BITG is the only seeded activity. No legal entity or KVK data is fabricated. The later dashboard can show four branded activity choices; tariffs, VAT treatment, templates and number series belong to explicit activity/legal-entity configuration. They are not embedded in public page bundles.
+`legal_entities` describes the legal undertaking; `activities` describes brands/activities. BITG is the only seeded server-side activity. No legal entity or KVK data is fabricated. The shared browser test workspace now shows four branded activity choices with a separate local entity/activity model. User-entered tariffs, VAT treatment, templates and customer records stay in its IndexedDB store, not in committed public files. The same document domain is designed for later use behind the existing server authentication boundary; the public workbench cannot issue real invoices or access server data.
 
 No customer portal, payments, AI planning, booking or invoice implementation is included in this first release. Standard Node/PostgreSQL deployment preserves portability to other EU hosts and future APIs.

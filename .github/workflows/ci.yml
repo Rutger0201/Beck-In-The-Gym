@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:17-alpine
@@ -30,6 +30,7 @@ jobs:
       BETTER_AUTH_SECRET: ci-only-not-production-auth-secret-at-least-32
       RATE_LIMIT_SECRET: ci-only-not-production-rate-secret-at-least-32
       JOBS_SECRET: ci-only-not-production-jobs-secret-at-least-32
+      PLAYWRIGHT_CHROME_CHANNEL: chrome
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,8 +51,8 @@ jobs:
       - run: npm run db:migrate
       - run: node scripts/grant-roles.mjs
       - run: npm run test:integration
-      - name: Install browser
-        run: npx playwright install --with-deps chromium
+      - name: Check preinstalled browser
+        run: google-chrome --version
       - name: Browser design checks
         run: npm run test:e2e
       - name: Retain reviewed Pages preview

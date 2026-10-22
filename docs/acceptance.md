@@ -8,6 +8,8 @@
 - Bounded server validation, restricted database submission, atomic contact/outbox writes and rate limiting.
 - Separate admin app with password/TOTP enrolment and recovery codes, server-side membership checks, contact statuses and audit writes.
 - Mail worker/retries, retention cleanup, schema migration/provisioning scripts, tests and operations/migration documentation.
+- Shared four-activity browser test workspace: customers, activity settings, quotations, invoice concepts, exact calculations, PDF/print, local backup/restore and read-only legacy inventory.
+- Independently installable card at `/kaart/` and business workspace at `/zakelijk/`, each with its own manifest, start route, icons and offline shell.
 
 ## Verification record
 
@@ -33,4 +35,4 @@ See the implementation handoff for the exact commands executed and their outcome
 
 ## Deferred by design
 
-Four-activity dashboard, actual legacy imports, quotation/invoice issuance, customer portal, payments, subscriptions, mobile app, AI training plans and external system integrations need their later approval gates. The supplied read-only backup inspector is not a data migration.
+Actual legacy imports, definitive quotation/invoice issuance, shared server document storage, customer portal, payments, subscriptions, a native mobile app, AI training plans and external system integrations remain production work. The four-activity test workspace is implemented. Its read-only legacy backup inventory is not a data migration.

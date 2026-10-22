@@ -17,4 +17,4 @@ Browser checks cover logo containment and horizontal centering at 320, 390, 768,
 
 The full build, type checks, unit/validation tests, database tests and 12 browser tests passed in [CI run 39775060172](https://github.com/Rutger0201/Beck-In-The-Gym/actions/runs/39775060172). The resulting screenshots were inspected and the Pages output was checked for 418 local page/asset references before updating the online preview.
 
-The current imagery is the owner's supplied branding. No gym photography or trainer portrait has been supplied for BITG. The shared BITG document generator remains deferred; the existing Beck on the Rocks generator is at https://beckontherocks.nl/documenten.html and stores documents in the original browser.
+The current imagery is the owner's supplied branding. No gym photography or trainer portrait has been supplied for BITG. After this review the owner authorised the shared document module; see [the business workspace](business-workspace.md) for its implementation and test/production boundary. The existing Beck on the Rocks generator remains at https://beckontherocks.nl/documenten.html and stores documents in the original browser.
