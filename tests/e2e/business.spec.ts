@@ -20,6 +20,7 @@ test('quotation converts to invoice concept with unchanged amounts and source re
  await configure(page);await page.locator('[data-activity="bitg"]').click();await page.getByRole('button',{name:'+ Nieuwe offerte'}).click();await page.getByLabel('Naam',{exact:true}).fill('Testpersoon');await page.getByLabel('Prijs (€)',{exact:true}).fill('45');await page.getByRole('button',{name:'Opslaan',exact:true}).click();
  await expect(page.locator('.editor-heading h2')).toContainText('TEST-BITG-O-');const quote=await page.locator('.editor-heading h2').innerText();await page.getByRole('button',{name:'Naar factuur'}).click();await expect(page.getByLabel('Referentie (optioneel)')).toHaveValue(quote);await expect(page.locator('.grand-total')).toContainText('54,45');await page.getByRole('button',{name:'Opslaan',exact:true}).click();await expect(page.locator('.editor-heading h2')).toContainText('TEST-BITG-F-');
  await expect(page.locator('#paper')).toContainText('CONCEPT · TESTDOCUMENT');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ expect(await page.locator('#paper tbody td').first().evaluate(el=>el.getBoundingClientRect().width)).toBeGreaterThanOrEqual(169);
  await page.screenshot({path:`test-results/review/${info.project.name}-shared-generator.png`,fullPage:true});
 });
 test('card shortcut has its own PWA identity, launch target, icons and install instructions',async({page},info)=>{
