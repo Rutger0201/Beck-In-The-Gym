@@ -8,8 +8,27 @@ test("homepage, theme, mobile menu and language switch",async({page,isMobile})=>
   if(isMobile)await page.getByRole("button",{name:"Menu"}).click();
   await page.getByRole("link",{name:"EN",exact:true}).click();await expect(page.locator("html")).toHaveAttribute("lang","en");await expect(page.locator("h1")).toContainText("STRONGER.");
 });
-test("optional fields, preselection and failure preserve contact input",async({page})=>{
+test("preview form keeps input and sends no personal data",async({page})=>{
+  const writes:string[]=[];page.on("request",request=>{if(!["GET","HEAD"].includes(request.method()))writes.push(request.url());});
   await page.goto("/contact?goal=technique&format=technique");await expect(page.locator('[name="goal"]')).toHaveValue("technique");await expect(page.locator('[name="format"]')).toHaveValue("technique");
   await page.getByLabel("Je naam",{exact:true}).fill("Test person");await page.getByLabel("E-mailadres",{exact:true}).fill("test@example.test");
-  await page.getByRole("button",{name:"Verstuur je aanvraag"}).click();await expect(page.locator('[role="status"]')).toContainText("niet gelukt");await expect(page.locator('[name="name"]')).toHaveValue("Test person");
+  await page.getByRole("button",{name:"Verstuur je aanvraag"}).click();await expect(page.locator('[role="status"]')).toContainText("geen gegevens verstuurd");await expect(page.locator('[name="name"]')).toHaveValue("Test person");expect(writes).toEqual([]);
+});
+
+test("Pages links, vCard and QR work under the repository path",async({page})=>{
+  const missing:string[]=[];page.on("response",response=>{if(response.status()>=400)missing.push(response.url());});
+  const base="/Beck-In-The-Gym/preview";
+  await page.goto(`${base}/visitekaartje/`);
+  await expect(page).toHaveTitle(/Digitaal visitekaartje/);
+  const qr=page.locator(".qr img");await expect(qr).toBeVisible();expect(await qr.evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);
+  const downloadPromise=page.waitForEvent("download");await page.getByRole("link",{name:"Opslaan in contacten"}).click();const download=await downloadPromise;expect(download.suggestedFilename()).toBe("beck-in-the-gym.vcf");
+  const vcard=await page.request.get(`${base}/contact.vcf`);expect(vcard.status()).toBe(200);expect(await vcard.text()).toContain("URL:https://rutger0201.github.io/Beck-In-The-Gym/preview/");
+  await page.locator(".card-actions a").last().click();await expect(page).toHaveURL(new RegExp(`${base}/?$`));
+  await page.goto(`${base}/en/business-card/`);await expect(page.locator("html")).toHaveAttribute("lang","en");
+  expect(missing).toEqual([]);
+});
+
+test("preview submission is disabled when JavaScript is unavailable",async({browser})=>{
+  const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();
+  await page.goto("http://127.0.0.1:4173/contact/");await expect(page.getByRole("button",{name:"Verstuur je aanvraag"})).toBeDisabled();await context.close();
 });
