@@ -41,7 +41,8 @@ test("all Dutch and English pages load without broken images or overflow",async(
       const response=await page.goto(pageUrl(locale,key));expect(response?.status()).toBe(200);
       await page.evaluate(()=>document.fonts.ready);await expect(page.locator("html")).toHaveAttribute("lang",locale);
       expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${locale}/${key}`).toBe(true);
-      expect(await page.locator("img").evaluateAll(imgs=>imgs.every(img=>img.complete&&img.naturalWidth>0)),`${locale}/${key}: broken image`).toBe(true);
+      const images=await page.locator("img").evaluateAll(imgs=>Promise.all(imgs.map(async img=>{img.loading="eager";try{await img.decode();return img.naturalWidth>0;}catch{return false;}})));
+      expect(images.every(Boolean),`${locale}/${key}: broken image`).toBe(true);
     }
   }
   expect(errors).toEqual([]);
