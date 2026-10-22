@@ -8,4 +8,6 @@ export function proxy(request: NextRequest) {
   if (url.pathname !== "/en" && !url.pathname.startsWith("/en/")) url.pathname = `/nl${url.pathname}`;
   return NextResponse.rewrite(url);
 }
-export const config = { matcher: ["/((?!api|_next|brand|media|fonts|favicon|robots.txt|sitemap.xml|contact.vcf|qr.svg).*)"] };
+// Pages never contain a dot, so every path with a file extension (site.js, icons,
+// contact.vcf, qr.svg, robots.txt, ...) is served directly instead of rewritten.
+export const config = { matcher: ["/((?!api|_next|brand|fonts|.*\\..*).*)"] };

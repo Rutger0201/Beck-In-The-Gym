@@ -1,4 +1,5 @@
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { pageKeys,locales,pageUrl,resolvePage,slugs } from "../packages/core/src/routes.ts";
 import { sameOrigin,secretMatches,rateKey,buildVcard,readLimitedJson,safeInstagram,networkIdentity } from "../packages/core/src/security.ts";
@@ -15,3 +16,11 @@ test("only verified Instagram domains are allowed",()=>{assert.equal(safeInstagr
 test("legacy review never recalculates or mutates a backup",()=>{const backup={app:"beck-documenten",versie:1,documenten:{"O-2026-001":{nummer:"O-2026-001",type:"offerte",status:"verstuurd"}}};const original=JSON.stringify(backup),review=inspectLegacyBackup(backup);assert.equal(review.count,1);assert.equal(review.documents[0].requiresPdfReconciliation,true);assert.equal(JSON.stringify(backup),original);assert.throws(()=>inspectLegacyBackup({...backup,versie:2}));});
 test("all public pages render in both languages, without invented claims",()=>{const config={name:"Rutger",verified:false,formAvailable:false};for(const locale of locales)for(const page of pageKeys){const html=header(locale,page)+pageMarkup(locale,page,config)+footer(locale,config);assert.ok(html.length>1000);assert.ok(!html.includes("undefined"));assert.ok(!html.includes("rutger@beck.nl"));assert.ok(!html.includes("AALO"));assert.ok(!html.includes("€"));}assert.ok(!pageMarkup("nl","contact",config).includes("<form"));assert.ok(pageMarkup("nl","contact",{...config,formAvailable:true}).includes('action="/api/v1/contact-requests"'));});
 test("public rendering escapes configurable contact text",()=>{const html=pageMarkup("nl","card",{name:'<img src=x onerror="alert(1)">',email:'a" onclick="bad@test.nl',verified:false,formAvailable:false});assert.ok(html.includes("&lt;img"));assert.ok(!html.includes('<img src=x'));assert.ok(!html.includes('href="mailto:a" onclick='));});
+
+test("proxy leaves static files alone and rewrites every page route",async()=>{
+  // Next.js reads the matcher statically, so it is a literal in proxy.ts.
+  const source=await readFile(new URL("../apps/web/proxy.ts",import.meta.url),"utf8");
+  const matcher=new RegExp(`^${JSON.parse(source.match(/matcher: \[("(?:[^"\\]|\\.)*")\]/)![1])}$`);
+  for(const path of ["/site.js","/icon-192.png","/contact.vcf","/qr.svg","/robots.txt","/sitemap.xml","/brand/emblem.jpg","/fonts/inter-regular.woff2","/_next/static/x.js","/api/v1/contact-requests"])assert.equal(matcher.test(path),false,path);
+  for(const locale of locales)for(const page of pageKeys)assert.equal(matcher.test(pageUrl(locale,page)),true,pageUrl(locale,page));
+});

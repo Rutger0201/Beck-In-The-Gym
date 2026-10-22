@@ -9,8 +9,9 @@ function configuration(){
 export async function deliverPendingMail(){
   const config=configuration();
   // A lease survives process crashes. SKIP LOCKED prevents concurrent workers
-  // from claiming the same job; provider idempotency covers retry ambiguity.
-  const jobs=await pool("admin").query<Delivery>(`WITH pending AS (SELECT id FROM mail_outbox WHERE sent_at IS NULL AND attempts<8 AND available_at<=now() AND (lease_until IS NULL OR lease_until<now()) ORDER BY available_at FOR UPDATE SKIP LOCKED LIMIT 10), claimed AS (UPDATE mail_outbox AS o SET attempts=attempts+1,lease_until=now()+interval '2 minutes' FROM pending WHERE o.id=pending.id RETURNING o.*) SELECT claimed.id,claimed.contact_id,claimed.kind,claimed.attempts,c.email,c.name,c.locale FROM claimed JOIN contact_requests c ON c.id=claimed.contact_id`);
+  // from claiming the same job. The lease must outlast a full batch (10 sends
+  // with a 15 s timeout each), or a second worker can re-claim and resend.
+  const jobs=await pool("admin").query<Delivery>(`WITH pending AS (SELECT id FROM mail_outbox WHERE sent_at IS NULL AND attempts<8 AND available_at<=now() AND (lease_until IS NULL OR lease_until<now()) ORDER BY available_at FOR UPDATE SKIP LOCKED LIMIT 10), claimed AS (UPDATE mail_outbox AS o SET attempts=attempts+1,lease_until=now()+interval '5 minutes' FROM pending WHERE o.id=pending.id RETURNING o.*) SELECT claimed.id,claimed.contact_id,claimed.kind,claimed.attempts,c.email,c.name,c.locale FROM claimed JOIN contact_requests c ON c.id=claimed.contact_id`);
   let sent=0,failed=0;
   for(const job of jobs.rows){
     const nl=job.locale==="nl";
