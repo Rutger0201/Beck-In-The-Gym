@@ -6,8 +6,10 @@ export function siteConfig() {
   if (process.env.NODE_ENV === "production" && url.protocol !== "https:") throw new Error("Production SITE_URL must use HTTPS");
   const email = process.env.CONTACT_EMAIL?.trim();
   const phone = process.env.CONTACT_PHONE?.trim();
+  const admin = URL.canParse(process.env.ADMIN_URL || "") ? new URL(process.env.ADMIN_URL!) : undefined;
   return {
     url: url.origin,
+    adminUrl: admin && /^https?:$/.test(admin.protocol) ? admin.href : undefined,
     published: process.env.PUBLICATION_APPROVED === "true",
     name: process.env.CONTACT_FULL_NAME?.trim() || "Rutger",
     email: email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : undefined,

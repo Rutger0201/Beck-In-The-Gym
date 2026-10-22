@@ -17,6 +17,14 @@ test("preview form keeps input and sends no personal data",async({page})=>{
   await page.getByRole("button",{name:"Verstuur je aanvraag"}).click();await expect(page.locator('[role="status"]')).toContainText("geen gegevens verstuurd");await expect(page.locator('[name="name"]')).toHaveValue("Test person");expect(writes).toEqual([]);
 });
 
+test("menu has an Admin link to the business workspace on Pages",async({page,isMobile})=>{
+  await page.goto("/");await expect(page.locator(".admin-link")).toHaveCount(0);
+  await page.goto("/Beck-In-The-Gym/preview/");
+  if(isMobile)await page.getByRole("button",{name:"Menu"}).click();
+  const admin=page.getByRole("link",{name:"Admin",exact:true});await expect(admin).toBeVisible();
+  await expect(admin).toHaveAttribute("href","https://rutger0201.github.io/Beck-In-The-Gym/zakelijk/");
+});
+
 test("Pages links, vCard and QR work under the repository path",async({page})=>{
   const missing:string[]=[];page.on("response",response=>{if(response.status()>=400)missing.push(response.url());});
   const base="/Beck-In-The-Gym/preview";
