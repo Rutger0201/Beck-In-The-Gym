@@ -7,8 +7,8 @@ const arrow = '<span aria-hidden="true">↗</span>';
 const link = (url: string, label: string, cls = "text-link") => `<a class="${cls}" href="${esc(url)}">${esc(label)}${arrow}</a>`;
 const logo = (cls = "") => `<span class="logo-lockup ${cls}"><img src="/brand/logo-white.png" width="3840" height="2160" alt="Beck In The Gym"></span>`;
 const photoSet = (format: string) => [480,800,1152].map(width=>`/photos/coaching-${width}.${format} ${width}w`).join(", ");
-// Responsive hero photo centred on Rutger; the lettering on his shirt is retouched out of the source.
-const photo = (alt: string, sizes: string, eager = false) => `<picture><source type="image/avif" srcset="${photoSet("avif")}" sizes="${sizes}"><img src="/photos/coaching-800.webp" srcset="${photoSet("webp")}" sizes="${sizes}" width="1152" height="1440" alt="${esc(alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}></picture>`;
+// Responsive hero photo of Rutger coaching a client, weighted towards Rutger; the lettering on his shirt is retouched out of the source.
+const photo = (alt: string, sizes: string, eager = false) => `<picture><source type="image/avif" srcset="${photoSet("avif")}" sizes="${sizes}"><img src="/photos/coaching-800.webp" srcset="${photoSet("webp")}" sizes="${sizes}" width="1152" height="922" alt="${esc(alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}></picture>`;
 const ticks = '<span class="tick tick-start" aria-hidden="true"></span><span class="tick tick-end" aria-hidden="true"></span>';
 function brand(locale: Locale) { return `<a class="brand" href="${pageUrl(locale,"home")}" aria-label="Beck In The Gym — ${locale === "nl" ? "homepagina" : "homepage"}"><span class="brand-picture"><img src="/brand/emblem.jpg" width="1280" height="1280" alt=""></span><span class="brand-type">BECK<span>IN THE GYM</span></span></a>`; }
 export function header(locale: Locale, page: PageKey, adminUrl?: string) {
