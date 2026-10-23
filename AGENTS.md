@@ -7,7 +7,7 @@ Read README.md and the relevant docs before changing behavior. Preserve user edi
 - No public prices, booking system, invented qualifications, results or reviews.
 - Keep Dutch and English pages in sync; route helpers are the source of truth.
 - Treat uploaded logos as brand originals. Keep licensed fonts locally hosted.
-- Use dark UI only, as requested by the owner. Do not restore system/light themes or a theme selector. Original raster logos have visible edge defects; a high-resolution canvas does not make them vector originals.
+- The public site has one fixed design (owner-approved 22 October 2026): dark architectural surfaces alternating with light concrete sections. Do not add a theme selector or follow the system theme. Admin, the business workspace and the standalone card stay dark. Original raster logos have visible edge defects; a high-resolution canvas does not make them vector originals.
 - Don't copy bartending contact or legal details into BITG without confirmation.
 - No production deployment, repository-visibility change, or legacy data migration without the applicable owner approval.
 - The owner has authorised the shared four-activity document module. Its Pages workbench uses browser-local test documents. Definitive issuance and shared server storage require the production infrastructure. Do not modify Beck On The Rocks as a side effect.
