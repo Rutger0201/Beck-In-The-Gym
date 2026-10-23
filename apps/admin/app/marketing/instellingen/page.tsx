@@ -3,7 +3,7 @@ import { integrations } from "@bitg/core/marketing/labels";
 import { ActionButton } from "../../../components/ActionButton";
 import { SettingsForm } from "../../../components/SettingsForm";
 export const dynamic="force-dynamic";
-const jobs={research:"Research",plan:"Planning"},statuses={running:"Loopt",succeeded:"Geslaagd",failed:"Mislukt"};
+const jobs:Record<string,string>={research:"Research",plan:"Planning",growth:"Growth-scan",growth_digest:"Growth-weekoverzicht",growth_draft:"Growth-concept"},statuses={running:"Loopt",succeeded:"Geslaagd",failed:"Mislukt"};
 export default async function Settings(){
   const [{settings,version},runs,cost]=await Promise.all([getSettings(),listRuns(15),costSummary()]);
   return <>

@@ -12,7 +12,7 @@ node --env-file=.env scripts/grant-roles.mjs
 npm run admin:create
 ```
 
-The migration command records checksums and takes an advisory lock. Applied files must never be changed; add a new migration instead. The grant script expects both application login roles to exist. Verify the web role cannot select or update contact tables. Owner creation uses the migration connection and prompts for a hidden password. Log into the admin application and complete authenticator enrolment before accessing requests. Re-run the grant script after migrations that add tables, such as the marketing module (see docs/marketing.md).
+The migration command records checksums and takes an advisory lock. Applied files must never be changed; add a new migration instead. The grant script expects both application login roles to exist. Verify the web role cannot select or update contact tables. Owner creation uses the migration connection and prompts for a hidden password. Log into the admin application and complete authenticator enrolment before accessing requests. Re-run the grant script after migrations that add tables, such as the marketing module (see docs/marketing.md) and the Growth Pipeline (see docs/growth.md).
 
 ## Managed hosting proposal
 
