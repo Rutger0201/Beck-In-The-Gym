@@ -7,14 +7,14 @@ const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "private, no-store" } });
 // Every marketing write: same origin, session + 2FA + owner membership, bounded and validated JSON.
 type Schema<T> = { safeParse(value: unknown): { success: true; data: T } | { success: false } };
-export async function marketingWrite<T>(request: Request, action: string, schema: Schema<T> | null, work: (input: T, actor: string) => Promise<unknown>, id?: string) {
+export async function marketingWrite<T>(request: Request, action: string, schema: Schema<T> | null, work: (input: T, actor: string) => Promise<unknown>, id?: string, maxBytes = 8192) {
   try {
     if (!process.env.ADMIN_URL || !sameOrigin(request.headers.get("origin"), process.env.ADMIN_URL)) return json({ error: "Forbidden" }, 403);
     const owner = await authorisedOwner(request.headers); if (!owner) return json({ error: "Unauthorized" }, 401);
     if (id !== undefined && !uuid.test(id)) return json({ error: "Invalid request" }, 400);
     let input: unknown = {};
     if (schema) {
-      const parsed = schema.safeParse(await readLimitedJson(request, 8192).catch(() => undefined));
+      const parsed = schema.safeParse(await readLimitedJson(request, maxBytes).catch(() => undefined));
       if (!parsed.success) return json({ error: "Invalid request" }, 400);
       input = parsed.data;
     }

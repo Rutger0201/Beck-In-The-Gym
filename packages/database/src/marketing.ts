@@ -9,8 +9,8 @@ import type { LeadSignal } from "@bitg/core/marketing/leads";
 import { readSettings, type MarketingSettings } from "@bitg/core/marketing/validation";
 import type { CalendarBrief, CalendarStatus, Channel, OpportunityStatus } from "@bitg/core/marketing/labels";
 
-type Job = "research" | "plan";
-type Trigger = "manual" | "schedule";
+type Job = "research" | "plan" | "growth" | "growth_digest" | "growth_draft";
+export type Trigger = "manual" | "schedule";
 export class RunConflict extends Error {}
 export class VersionConflict extends Error {}
 export class InvalidChange extends Error {}
@@ -49,12 +49,12 @@ export async function startRun(job: Job, trigger: Trigger, { leaseSeconds = 300,
     return result.rows[0].id as string;
   });
 }
-export async function finishRun(id: string, outcome: { stats?: Record<string, number>; error?: string }) {
-  await pool("admin").query("UPDATE marketing_runs SET status=$2,finished_at=now(),stats=$3,error=$4 WHERE id=$1 AND status='running'", [id, outcome.error ? "failed" : "succeeded", JSON.stringify(outcome.stats || {}), outcome.error?.slice(0, 500) ?? null]);
+export async function finishRun(id: string, outcome: { stats?: Record<string, number>; error?: string; costCents?: number }) {
+  await pool("admin").query("UPDATE marketing_runs SET status=$2,finished_at=now(),stats=$3,error=$4,cost_cents=$5 WHERE id=$1 AND status='running'", [id, outcome.error ? "failed" : "succeeded", JSON.stringify(outcome.stats || {}), outcome.error?.slice(0, 500) ?? null, Math.max(0, Math.round(outcome.costCents ?? 0))]);
 }
-async function tracked<T extends Record<string, number>>(job: Job, trigger: Trigger, options: Parameters<typeof startRun>[2], work: () => Promise<T>): Promise<T> {
+export async function tracked<T extends Record<string, number>>(job: Job, trigger: Trigger, options: Parameters<typeof startRun>[2], work: () => Promise<T>): Promise<T> {
   const id = await startRun(job, trigger, options);
-  try { const stats = await work(); await finishRun(id, { stats }); return stats; }
+  try { const stats = await work(); await finishRun(id, { stats, costCents: stats.costCents }); return stats; }
   catch (error) { await finishRun(id, { error: error instanceof Error ? error.message : "Onbekende fout" }); throw error; }
 }
 

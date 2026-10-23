@@ -51,6 +51,8 @@ De meegeleverde originele README en starter-ZIP zijn bewaard. De bestaande Beck 
 
 De beheeromgeving bevat op `/marketing` een AI-marketingdashboard met kansen, prioriteitsscores, een 30-dagenkalender en leadanalyse. Er wordt niets automatisch gepubliceerd of uitgegeven. Zie [marketingmodule](docs/marketing.md).
 
+Op `/growth` staat de Growth Pipeline: een dagelijkse scan van toegestane online bronnen (nieuwsfeeds, evenementenkalenders, agendapagina's en optioneel zoek-API's) naar kansen in Almere en Flevoland, met een Opportunity Score, kaart, CRM en een AI-assistent voor concepten. Er wordt nooit automatisch iets verstuurd. Zie [Growth Pipeline](docs/growth.md).
+
 ## Controles
 
 ```sh
