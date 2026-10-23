@@ -26,7 +26,7 @@ test('quotation converts to invoice concept with unchanged amounts and source re
 test('card shortcut has its own PWA identity, launch target, icons and install instructions',async({page},info)=>{
  await page.emulateMedia({colorScheme:'light'});
  const base='/Beck-In-The-Gym/kaart/';await page.goto(base);await expect(page).toHaveTitle('BITG — digitaal visitekaartje');await page.getByRole('button',{name:'Zet op beginscherm'}).click();await expect(page.locator('[data-install-help]')).toBeVisible();
- expect(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme)).toBe('dark');expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(17, 19, 16)');
+ expect(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme)).toBe('dark');expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(13, 14, 15)');
  const response=await page.request.get(`${base}manifest.webmanifest`);expect(response.status()).toBe(200);const manifest=await response.json();expect(manifest.start_url).toBe('./');expect(manifest.scope).toBe('./');expect(manifest.display).toBe('standalone');expect(manifest.name).toContain('visitekaartje');
  for(const icon of manifest.icons)expect((await page.request.get(`${base}${icon.src}`)).status()).toBe(200);
  await expect(page.locator('.qr img')).toBeVisible();expect(await page.locator('.qr img').evaluate((i:HTMLImageElement)=>i.naturalWidth>0)).toBe(true);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);

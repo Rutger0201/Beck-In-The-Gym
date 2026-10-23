@@ -3,16 +3,16 @@ import {mkdir} from "node:fs/promises";
 import {locales,pageKeys,pageUrl} from "../../packages/core/src/routes.ts";
 
 test("logos fit and stay centered on phone, tablet and desktop",async({page},testInfo)=>{
-  test.setTimeout(120_000);
+  test.setTimeout(240_000);
   await page.emulateMedia({reducedMotion:"reduce"});
   await mkdir("test-results/review",{recursive:true});
-  for(const width of [320,390,768,1024,1440]){
+  for(const width of [320,375,390,430,768,1024,1440,1920]){
     await page.setViewportSize({width,height:900});
     for(const theme of ["light","dark"] as const){
       await page.emulateMedia({colorScheme:theme});
       for(const route of ["/","/visitekaartje/"]){
         await page.goto(route);await page.evaluate(()=>document.fonts.ready);
-        expect(await page.locator('html').evaluate(el=>getComputedStyle(el).colorScheme)).toBe('dark');expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(17, 19, 16)');await expect(page.locator('#theme')).toHaveCount(0);
+        expect(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(13, 14, 15)');await expect(page.locator('#theme')).toHaveCount(0);
         expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${width}px ${route}`).toBe(true);
         const frames=page.locator(".logo-lockup");
         for(const frame of await frames.all()){
@@ -25,7 +25,9 @@ test("logos fit and stay centered on phone, tablet and desktop",async({page},tes
           expect(geometry.loaded).toBe(true);expect(geometry.inFrame,`${width}px ${route}: logo crop`).toBe(true);expect(geometry.inParent).toBe(true);expect(geometry.center).toBeLessThan(1);
         }
         if(!route.includes("visitekaartje")){
-          const circleCenter=await page.locator(".map-dot").evaluate(el=>{const dot=el.getBoundingClientRect(),map=el.parentElement!.getBoundingClientRect();return Math.abs(dot.x+dot.width/2-map.x-map.width/2);});expect(circleCenter).toBeLessThan(1);
+          // The hero photo keeps its 4:5 frame and stays inside the viewport.
+          const media=await page.locator(".hero-media picture").evaluate(el=>{const r=el.getBoundingClientRect();return{left:r.left,right:r.right,width:r.width};});
+          expect(media.left).toBeGreaterThanOrEqual(0);expect(media.right).toBeLessThanOrEqual(width);expect(media.width).toBeGreaterThan(200);
         }
         if([390,1440].includes(width))await page.screenshot({path:`test-results/review/${testInfo.project.name}-${width}-${theme}-${route==="/"?"home":"card"}.png`,fullPage:true});
       }

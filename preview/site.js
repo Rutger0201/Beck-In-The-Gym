@@ -1,17 +1,38 @@
 (() => {
   const root = document.documentElement;
   root.classList.add('js');
-  root.dataset.theme = 'dark';
   try { localStorage.removeItem('bitg-theme'); } catch {}
+  const header = document.querySelector('[data-header]');
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#navigation');
-  const closeMenu = () => { nav?.classList.remove('is-open'); toggle?.setAttribute('aria-expanded','false'); };
-  toggle?.addEventListener('click', () => { const open = toggle.getAttribute('aria-expanded') !== 'true'; toggle.setAttribute('aria-expanded',String(open)); nav?.classList.toggle('is-open',open); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') { closeMenu(); toggle.focus(); } });
+  const onScroll = () => header?.classList.toggle('is-scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  const setMenu = open => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    if (open && header) nav?.style.setProperty('top', `${Math.max(0, header.getBoundingClientRect().bottom)}px`);
+    nav?.classList.toggle('is-open', open);
+    root.style.overflow = open ? 'hidden' : '';
+    if (open) nav?.querySelector('a')?.focus();
+  };
+  const closeMenu = () => { if (toggle?.getAttribute('aria-expanded') === 'true') setMenu(false); };
+  toggle?.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('keydown', event => {
+    if (toggle?.getAttribute('aria-expanded') !== 'true') return;
+    if (event.key === 'Escape') { setMenu(false); toggle.focus(); return; }
+    if (event.key !== 'Tab') return;
+    // Keep focus inside the open mobile menu: the toggle and the menu links.
+    const items = [toggle, ...nav.querySelectorAll('a')], first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
   nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+  matchMedia('(min-width: 861px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+  // Content above the fold stays visible; only sections further down get an entrance.
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.08});
-    document.querySelectorAll('[data-reveal]').forEach(el=>{el.classList.add('will-reveal');observer.observe(el);});
+    // Reveal every waiting element that is in or above the viewport, so fast scrolling never skips one.
+    const reveal = () => document.querySelectorAll('.will-reveal:not(.is-visible)').forEach(el=>{if(el.getBoundingClientRect().top<innerHeight){el.classList.add('is-visible');observer.unobserve(el);}});
+    const observer = new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting))reveal();},{threshold:0});
+    document.querySelectorAll('[data-reveal]').forEach(el=>{if(el.getBoundingClientRect().top<innerHeight)return;el.classList.add('will-reveal');observer.observe(el);});
   }
   const count = event => { if (window.goatcounter?.count) window.goatcounter.count({path:event,event:true}); };
   document.querySelectorAll('a[href^="https://wa.me/"]').forEach(a=>a.addEventListener('click',()=>count('contact-whatsapp')));
