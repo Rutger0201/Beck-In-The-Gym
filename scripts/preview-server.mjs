@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { readFile,stat } from 'node:fs/promises';
 import { resolve,extname,sep } from 'node:path';
 const root=resolve(import.meta.dirname,'../.local/preview');
-const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.vcf':'text/vcard; charset=utf-8','.woff2':'font/woff2','.ttf':'font/ttf'};
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.avif':'image/avif','.svg':'image/svg+xml','.vcf':'text/vcard; charset=utf-8','.woff2':'font/woff2','.ttf':'font/ttf'};
 const server=createServer(async(request,response)=>{
   if(request.method!=='GET'&&request.method!=='HEAD'){response.writeHead(503,{'Content-Type':'application/json'});response.end(JSON.stringify({message:'Design preview only. Nothing was submitted.'}));return;}
   try{

@@ -8,6 +8,8 @@ export const content = {
     heroText: "Jouw doelen. Jouw tempo. Mijn volle aandacht. Persoonlijke coaching waarmee je beter leert bewegen en gericht vooruitgaat.",
     secondary: "Ontdek de begeleiding", scroll: "ONTDEK BECK IN THE GYM", heroNote: "TECHNIEK. AANDACHT. VOORUITGANG.",
     values: ["Persoonlijke aandacht", "Techniek als basis", "Voor ieder niveau"],
+    photoAlt: "Een coach kijkt mee terwijl een sporter een kettlebell-oefening uitvoert in de gym.", photoCaption: "Coaching in de gym · Almere",
+    locationFacts: [["Trainingslocatie", "DeMIX Fitness & Leefstijl, Almere"], ["Andere locaties", "In overleg mogelijk"], ["Eerste stap", "Een kennismakingsgesprek"]],
     introLabel: "GEEN STARTPUNT IS HETZELFDE",
     introTitle: "Je hoeft niet fit te zijn om te beginnen.",
     introText: "Misschien stap je voor het eerst de gym binnen. Misschien train je al een tijd, maar wil je verder komen. We beginnen bij waar jij nu staat en maken de volgende stap overzichtelijk.",
@@ -18,11 +20,11 @@ export const content = {
     ],
     servicesLabel: "DE BEGELEIDING DIE BIJ JE PAST", servicesTitle: "Jij bepaalt de richting.\nWe bouwen samen verder.",
     services: [
-      { id: "one", title: "1-op-1 personal training", tag: "ALLE AANDACHT VOOR JOU", text: "Persoonlijke coaching met een plan op jouw niveau. We werken aan techniek, trainingsopbouw en vooruitgang die je kunt volgen." },
-      { id: "duo", title: "Duo personal training", tag: "SAMEN TRAINEN. EIGEN DOELEN.", text: "Train met je partner, vriend of collega. Jullie delen de training, met aandacht voor ieders niveau en uitvoering." },
-      { id: "group", title: "Small-group training", tag: "MAXIMAAL VIER DEELNEMERS", text: "De energie van samen sporten, met ruimte voor persoonlijke aanwijzingen. Een kleine groep, zodat iedereen in beeld blijft." },
-      { id: "plan", title: "Jouw trainingsschema", tag: "STRUCTUUR VOOR JOUW TRAINING", text: "Een persoonlijk schema dat past bij je doel, ervaring en beschikbare tijd. Met begrijpelijke uitleg en momenten om bij te sturen." },
-      { id: "technique", title: "Techniek & finetuning", tag: "KLEINE AANPASSING. BETERE UITVOERING.", text: "Gericht kijken naar je bewegingsuitvoering. Van je eerste squat tot het verfijnen van een oefening die je al langer doet." }
+      { id: "one", spec: "1 persoon", title: "1-op-1 personal training", tag: "ALLE AANDACHT VOOR JOU", text: "Persoonlijke coaching met een plan op jouw niveau. We werken aan techniek, trainingsopbouw en vooruitgang die je kunt volgen." },
+      { id: "duo", spec: "2 personen", title: "Duo personal training", tag: "SAMEN TRAINEN. EIGEN DOELEN.", text: "Train met je partner, vriend of collega. Jullie delen de training, met aandacht voor ieders niveau en uitvoering." },
+      { id: "group", spec: "Max. 4", title: "Small-group training", tag: "MAXIMAAL VIER DEELNEMERS", text: "De energie van samen sporten, met ruimte voor persoonlijke aanwijzingen. Een kleine groep, zodat iedereen in beeld blijft." },
+      { id: "plan", spec: "Op maat", title: "Jouw trainingsschema", tag: "STRUCTUUR VOOR JOUW TRAINING", text: "Een persoonlijk schema dat past bij je doel, ervaring en beschikbare tijd. Met begrijpelijke uitleg en momenten om bij te sturen." },
+      { id: "technique", spec: "Finetuning", title: "Techniek & finetuning", tag: "KLEINE AANPASSING. BETERE UITVOERING.", text: "Gericht kijken naar je bewegingsuitvoering. Van je eerste squat tot het verfijnen van een oefening die je al langer doet." }
     ],
     aboutLabel: "DE PERSOON ACHTER BITG", aboutTitle: "Hoi, ik ben Rutger.",
     aboutText: "Ik wil dat je weet wat je doet, waarom je het doet en hoe je verder kunt. Daarom draait mijn begeleiding om duidelijke uitleg, aandacht voor techniek en een aanpak die bij je past. Serieus trainen, met ruimte om te lachen.",
@@ -61,15 +63,17 @@ export const content = {
     eyebrow: "PERSONAL TRAINING · ALMERE", headline: ["STRONGER.", "YOUR", "WAY."],
     heroText: "Your goals. Your pace. My full attention. Personal coaching to help you move well and make purposeful progress.",
     secondary: "Explore the coaching", scroll: "DISCOVER BECK IN THE GYM", heroNote: "TECHNIQUE. ATTENTION. PROGRESS.", values: ["Personal attention", "Technique first", "Every experience level"],
+    photoAlt: "A coach watches closely while a client performs a kettlebell exercise in the gym.", photoCaption: "Coaching in the gym · Almere",
+    locationFacts: [["Training location", "DeMIX Fitness & Leefstijl, Almere"], ["Other locations", "By arrangement"], ["First step", "An introductory conversation"]],
     introLabel: "EVERY STARTING POINT IS DIFFERENT", introTitle: "You don't need to be fit to get started.", introText: "You might be walking into a gym for the first time. Or you may have been training for years and want to move forward. We start where you are and make your next step clear.",
     goals: [["01", "Build strength", "Create a solid foundation with exercises you understand and a progression that suits you."], ["02", "Develop muscle", "Train with purpose, a personal plan, careful technique and room to recover."], ["03", "Feel fitter every day", "Build strength and fitness to move with more energy and confidence."]],
     servicesLabel: "COACHING THAT FITS YOU", servicesTitle: "You choose the direction.\nWe build from there.",
     services: [
-      { id: "one", title: "1-to-1 personal training", tag: "MY FULL ATTENTION", text: "Personal coaching and a plan at your level. We work on technique, sensible progression and progress you can follow." },
-      { id: "duo", title: "Duo personal training", tag: "TRAIN TOGETHER. YOUR OWN GOALS.", text: "Train with a partner, friend or colleague. Share the session while receiving guidance suited to each person's level." },
-      { id: "group", title: "Small-group training", tag: "UP TO FOUR PEOPLE", text: "The energy of training together, with room for individual guidance. A small group means everyone stays in focus." },
-      { id: "plan", title: "Your training plan", tag: "STRUCTURE FOR YOUR SESSIONS", text: "A personal programme for your goal, experience and available time. Clear explanations and opportunities to adjust along the way." },
-      { id: "technique", title: "Technique & fine-tuning", tag: "SMALL ADJUSTMENTS. BETTER MOVEMENT.", text: "Focused attention to how you move, from your first squat to refining an exercise you have practised for years." }
+      { id: "one", spec: "1 person", title: "1-to-1 personal training", tag: "MY FULL ATTENTION", text: "Personal coaching and a plan at your level. We work on technique, sensible progression and progress you can follow." },
+      { id: "duo", spec: "2 people", title: "Duo personal training", tag: "TRAIN TOGETHER. YOUR OWN GOALS.", text: "Train with a partner, friend or colleague. Share the session while receiving guidance suited to each person's level." },
+      { id: "group", spec: "Up to 4", title: "Small-group training", tag: "UP TO FOUR PEOPLE", text: "The energy of training together, with room for individual guidance. A small group means everyone stays in focus." },
+      { id: "plan", spec: "Tailored", title: "Your training plan", tag: "STRUCTURE FOR YOUR SESSIONS", text: "A personal programme for your goal, experience and available time. Clear explanations and opportunities to adjust along the way." },
+      { id: "technique", spec: "Fine-tuning", title: "Technique & fine-tuning", tag: "SMALL ADJUSTMENTS. BETTER MOVEMENT.", text: "Focused attention to how you move, from your first squat to refining an exercise you have practised for years." }
     ],
     aboutLabel: "THE PERSON BEHIND BITG", aboutTitle: "Hi, I'm Rutger.", aboutText: "I want you to understand what you are doing, why it matters and how to move forward. My coaching centres on clear explanations, attention to technique and an approach that fits you. Serious training, with room for a laugh.", aboutLink: "More about my approach", quote: "Good coaching starts with paying attention.",
     approachLabel: "FROM GETTING TO KNOW YOU TO PROGRESS", approachTitle: "A clear plan.\nA personal approach.",
